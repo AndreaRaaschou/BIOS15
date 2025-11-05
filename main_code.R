@@ -22,6 +22,7 @@ for (i in 1:1000){
 lwr_q <- mean(x) - 1.96*mean(out)
 uppr_q <- mean(x) + 1.96*mean(out)
 
+# Print results
 print(lwr_q)
 print(uppr_q)
 hist(out, las=1, main="")
