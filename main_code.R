@@ -19,11 +19,10 @@ for (i in 1:1000){
 }
 
 # Compute a 95 % confidence interval for the CV of x
-lwr_q <- mean(x) - 1.96*mean(out)
-uppr_q <- mean(x) + 1.96*mean(out)
+conf <- quantile(out, c(0.025, 0.975))
+
 
 # Print results
-print(lwr_q)
-print(uppr_q)
-hist(out, las=1, main="")
+print(conf)
+hist(out, las=1, main="Bootstrap CV")
 
