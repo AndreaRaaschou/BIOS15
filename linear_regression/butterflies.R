@@ -81,7 +81,7 @@ mh <- tapply(dat$DevelopmentTime, dat$MaternalHost, mean)
 (mh[2] - mh[1]) / mh[1] 
 
 # Larval host * Maternal host: * 2 - the increase is different - therefore there is an interaction
-# Maternal host barbarea: BarBar - BarBer / BarBar
+# Maternal host barbarea: BarBer - BarBar / BarBar
 (means[1,2] - means[1,1]) / means[1,1]
-# Maternal host Berteroa: BerBar - BerBer / BerBar
+# Maternal host Berteroa: BerBer - BerBar / BerBar
 (means[2,2] - means[2,1]) / means[2,1]
