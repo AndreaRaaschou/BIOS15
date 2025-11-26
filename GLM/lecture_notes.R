@@ -53,6 +53,7 @@ plot(x, eta, las=1)
 plot(x, p, las=1)
 plot(x, y, las=1)
 
+
 # Now, fit the generalized linear model, specify error family and link function
 m = glm(y~x, family=binomial(link="logit")) 
 summary(m)
