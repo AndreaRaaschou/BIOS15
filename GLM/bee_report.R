@@ -8,70 +8,79 @@ rm(list = ls())
 dat = read.csv("datasets/Eulaema.csv")
 head(dat)
 
+# Mean-center the MAP and MAT
+dat$MATmc <- dat$MAT - mean(dat$MAT, na.rm = TRUE)
+dat$MAPmc <- dat$MAP - mean(dat$MAP, na.rm = TRUE)
+
 # Fit a Negative Binomial Generalized Linear Model to the data
-m = glm.nb(Eulaema_nigrita~forest.+MAT+MAP, , data=dat)
+m = glm.nb(Eulaema_nigrita ~ forest. + MATmc + MAPmc, data=dat)
 summary(m) 
 exp(m$coefficients)
 r.squaredGLMM(m) 
+exp(-0.0050888)
+exp(-0.0014870)
+exp(0.0040805)
+exp(0.0002339)
+exp(-1.2983646)
 
 # Visualize the data and look at potential correlation between the fixed parameters
 par(mfrow=c(2,3))
-plot(dat$forest., dat$MAP)
-plot(dat$forest., dat$MAT)
-plot(dat$MAP, dat$MAT)
+plot(dat$forest., dat$MAPmc)
+plot(dat$forest., dat$MATmc)
+plot(dat$MAPmc, dat$MATmc)
 plot(dat$forest., dat$Eulaema_nigrita)
-plot(dat$MAP, dat$Eulaema_nigrita)
-plot(dat$MAT, dat$Eulaema_nigrita)
+plot(dat$MAPmc, dat$Eulaema_nigrita)
+plot(dat$MATmc, dat$Eulaema_nigrita)
 
-hist(dat$MAT)
-hist(dat$MAP)
+hist(dat$MATmc)
+hist(dat$MAPmc)
 
 par(mfrow = c(2,2))
 plot(m)
 
-# Plot prediction for E. nigrita abundance against forest cover with MAP and MAT as different lines
+# Plot prediction for E. nigrita abundance against forest cover with MAPmc and MATmc as different lines
 x <- seq(min(dat$forest.), max(dat$forest.), 0.01)
 
 newdata_mean <- data.frame(
   forest. = x,
-  MAP = mean(dat$MAP, na.rm = TRUE),
-  MAT = mean(dat$MAT, na.rm = TRUE)
+  MAPmc = mean(dat$MAPmc, na.rm = TRUE),
+  MATmc = mean(dat$MATmc, na.rm = TRUE)
 )
-newdata_lowMAP <- data.frame(
+newdata_lowMAPmc <- data.frame(
   forest. = x,
-  MAP = mean(dat$MAP, na.rm = TRUE)- sd(dat$MAP, na.rm = TRUE),
-  MAT = mean(dat$MAT, na.rm = TRUE) 
+  MAPmc = mean(dat$MAPmc, na.rm = TRUE)- sd(dat$MAPmc, na.rm = TRUE),
+  MATmc = mean(dat$MATmc, na.rm = TRUE) 
 )
-newdata_highMAP <- data.frame(
+newdata_highMAPmc <- data.frame(
   forest. = x,
-  MAP = mean(dat$MAP, na.rm = TRUE)+ sd(dat$MAP, na.rm = TRUE),
-  MAT = mean(dat$MAT, na.rm = TRUE) 
+  MAPmc = mean(dat$MAPmc, na.rm = TRUE)+ sd(dat$MAPmc, na.rm = TRUE),
+  MATmc = mean(dat$MATmc, na.rm = TRUE) 
 )
-newdata_lowMAT <- data.frame(
+newdata_lowMATmc <- data.frame(
   forest. = x,
-  MAP = mean(dat$MAP, na.rm = TRUE),
-  MAT = mean(dat$MAT, na.rm = TRUE) - sd(dat$MAT, na.rm = TRUE)
+  MAPmc = mean(dat$MAPmc, na.rm = TRUE),
+  MATmc = mean(dat$MATmc, na.rm = TRUE) - sd(dat$MATmc, na.rm = TRUE)
 )
-newdata_highMAT <- data.frame(
+newdata_highMATmc <- data.frame(
   forest. = x,
-  MAP = mean(dat$MAP, na.rm = TRUE),
-  MAT = mean(dat$MAT, na.rm = TRUE) + sd(dat$MAT, na.rm = TRUE)
+  MAPmc = mean(dat$MAPmc, na.rm = TRUE),
+  MATmc = mean(dat$MATmc, na.rm = TRUE) + sd(dat$MATmc, na.rm = TRUE)
 )
 
 y_hat_mean = predict(m, newdata=newdata_mean, type="response", se.fit=T)
-y_hat_lowMAP = predict(m, newdata=newdata_lowMAP, type="response", se.fit=T)
-y_hat_highMAP = predict(m, newdata=newdata_highMAP, type="response", se.fit=T)
-y_hat_lowMAT = predict(m, newdata=newdata_lowMAT, type="response", se.fit=T)
-y_hat_highMAT = predict(m, newdata=newdata_highMAT, type="response", se.fit=T)
+y_hat_lowMAPmc = predict(m, newdata=newdata_lowMAPmc, type="response", se.fit=T)
+y_hat_highMAPmc = predict(m, newdata=newdata_highMAPmc, type="response", se.fit=T)
+y_hat_lowMATmc = predict(m, newdata=newdata_lowMATmc, type="response", se.fit=T)
+y_hat_highMATmc = predict(m, newdata=newdata_highMATmc, type="response", se.fit=T)
 
 par(mfrow=c(1,2))
 plot(dat$forest., dat$Eulaema_nigrita, 
      las=1, col="darkgrey", pch=16,
      xlab = 'Forest cover', 
      ylab = expression(paste(italic("Eulaema nigrita")," abundance")))
-lines(x, y_hat_lowMAP$fit, col = 'red', lwd = '3')
+lines(x, y_hat_lowMAPmc$fit, col = 'red', lwd = '3')
 lines(x, y_hat_mean$fit, col = 'orange', lwd = '3')
-lines(x, y_hat_highMAP$fit, col = 'yellow', lwd = '3')
+lines(x, y_hat_highMAPmc$fit, col = 'yellow', lwd = '3')
 legend('topleft', 
        col = c('red',
                'orange', 
@@ -84,9 +93,9 @@ plot(dat$forest., dat$Eulaema_nigrita,
      las=1, col="darkgrey", pch=16,
      xlab = 'Forest cover', 
      ylab = expression(paste(italic("Eulaema nigrita")," abundance")))
-lines(x, y_hat_lowMAT$fit, col = 'red', lwd = '3')
+lines(x, y_hat_lowMATmc$fit, col = 'red', lwd = '3')
 lines(x, y_hat_mean$fit, col = 'orange', lwd = '3')
-lines(x, y_hat_highMAT$fit, col = 'yellow', lwd = '3')
+lines(x, y_hat_highMATmc$fit, col = 'yellow', lwd = '3')
 legend('topleft', 
        col = c('red',
                'orange', 
@@ -95,7 +104,6 @@ legend('topleft',
                   'Mean annual temperature = Mean', 
                   'Mean annual temperature = Mean + SD'))
 
-unique(dat$method)
 
 
 
