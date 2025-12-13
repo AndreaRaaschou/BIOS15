@@ -17,11 +17,6 @@ m = glm.nb(Eulaema_nigrita ~ forest. + MATmc + MAPmc, data=dat)
 summary(m) 
 exp(m$coefficients)
 r.squaredGLMM(m) 
-exp(-0.0050888)
-exp(-0.0014870)
-exp(0.0040805)
-exp(0.0002339)
-exp(-1.2983646)
 
 # Visualize the data and look at potential correlation between the fixed parameters
 par(mfrow=c(2,3))
