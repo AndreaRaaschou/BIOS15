@@ -27,10 +27,9 @@ dat <- na.omit(dat)
 # Remove outlier with 88 euc_sdlgs
 mean(dat$euc_sdlgs)
 
+# Analysis of outlier
 (88 - 28) / sd(dat$euc_sdlgs)
 dat <- dat[dat$euc_sdlgs < 80, ]
-
-
 
 # Testing models with different random effects to find which ones explain substantial variance
 m_re1 = glmmTMB(euc_sdlgs ~ grass_cover + fern_cover + shrub_cover + herb_cover + 
@@ -87,6 +86,7 @@ AICtab # Print the final ranked AIC table
 
 summary(m1)
 summary(m5)
+
 
 # Plot m5
 x <- seq(0, 100,length.out = 200)
@@ -145,4 +145,13 @@ for (i in seq_along(veg_cols)) {
        col = rgb(0,0,1,0.3),
        xlim = c(0, 100))
 }
+
+
+# Biological interpretation of parameter estimates
+# 10 % change in herb_cover
+exp(-0.03912 * 10)
+exp(0.01494 * 10)
+
+# random effect sd
+exp(1.576)
 
